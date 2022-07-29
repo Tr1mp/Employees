@@ -12,9 +12,9 @@ class App extends Component {
         super(props);
         this.state = {
             data: [
-                {name: 'Guthor Lefford', salary: 1000, cake: true, id: 1},
-                {name: 'Della Lincoln', salary: 1200, cake: false, id: 2},
-                {name: 'Nashi Temony', salary: 800, cake: false, id: 3},
+                {name: 'Guthor Lefford', salary: 1000, increase: true, like: true, id: 1},
+                {name: 'Della Lincoln', salary: 1200, increase: false, like: false, id: 2},
+                {name: 'Nashi Temony', salary: 800, increase: false, like: false, id: 3},
             ]
         }
     }
@@ -41,6 +41,7 @@ class App extends Component {
                 name, 
                 salary,
                 increase: false,
+                star: false,
                 id: this.findMax(data)
             }
             // const newArr = [...data, newItem];
@@ -50,15 +51,41 @@ class App extends Component {
                 //     name, 
                 //     salary,
                 //     increase: false,
+                //     star: false
                 //     id: this.findMax(data)
                 // })
                 // data: newArr
             }
         });
     }
+
+    onToggleIncrease = (id) => {
+        this.setState(({data}) => {
+            return {
+                data: data.map(item => {
+                    if (item.id === id) {
+                        return {...item, increase: !item.increase};
+                    }
+                    return item;
+                })
+            }
+        });
+    }
+    onToggleLike = (id) => {
+        this.setState(({data}) => {
+            return {
+                data: data.map(item => {
+                    if (item.id === id) {
+                        return {...item, like: !item.like}
+                    }
+                    return item;
+                })
+            }
+        });
+    }
+
     render() {
         const {data} = this.state;
-        // const {deleteItem, addItem} = this.props;
         return (
             <div className='app'>
                 <AppInfo/>
@@ -68,7 +95,9 @@ class App extends Component {
                 </div>
                 <EmployeesList 
                     data={data}
-                    onDelete={(id) => this.deleteItem(id)}/>
+                    onDelete={(id) => this.deleteItem(id)}
+                    onToggleIncrease={(id) => this.onToggleIncrease(id)}
+                    onToggleLike={(id) => this.onToggleLike(id)}/>
                 <EmployeesAddForm 
                     onAdd={(name, salary) => this.addItem(name, salary)}/>
             </div>
