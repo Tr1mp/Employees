@@ -41,7 +41,7 @@ class App extends Component {
                 name, 
                 salary,
                 increase: false,
-                star: false,
+                like: false,
                 id: this.findMax(data)
             }
             // const newArr = [...data, newItem];
@@ -59,24 +59,12 @@ class App extends Component {
         });
     }
 
-    onToggleIncrease = (id) => {
+    onToggleProp = (id, prop) => {
         this.setState(({data}) => {
             return {
                 data: data.map(item => {
                     if (item.id === id) {
-                        return {...item, increase: !item.increase};
-                    }
-                    return item;
-                })
-            }
-        });
-    }
-    onToggleLike = (id) => {
-        this.setState(({data}) => {
-            return {
-                data: data.map(item => {
-                    if (item.id === id) {
-                        return {...item, like: !item.like}
+                        return {...item, [prop]: !item[prop]};
                     }
                     return item;
                 })
@@ -86,9 +74,13 @@ class App extends Component {
 
     render() {
         const {data} = this.state;
+        const employees = data.length;
+        const increased = data.filter(item => item.increase).length;
         return (
             <div className='app'>
-                <AppInfo/>
+                <AppInfo 
+                    employees={employees}
+                    increased={increased}/>
                 <div className="search-panel">
                     <SearchPanel/>
                     <AppFilter/>
@@ -96,8 +88,7 @@ class App extends Component {
                 <EmployeesList 
                     data={data}
                     onDelete={(id) => this.deleteItem(id)}
-                    onToggleIncrease={(id) => this.onToggleIncrease(id)}
-                    onToggleLike={(id) => this.onToggleLike(id)}/>
+                    onToggleProp={(id, prop) => this.onToggleProp(id, prop)}/>
                 <EmployeesAddForm 
                     onAdd={(name, salary) => this.addItem(name, salary)}/>
             </div>
