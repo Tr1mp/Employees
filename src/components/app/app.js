@@ -15,7 +15,9 @@ class App extends Component {
                 {name: 'Guthor Lefford', salary: 1000, increase: true, like: true, id: 1},
                 {name: 'Della Lincoln', salary: 1200, increase: false, like: false, id: 2},
                 {name: 'Nashi Temony', salary: 800, increase: false, like: false, id: 3},
-            ]
+            ],
+            searchBar: '',
+            filter: 'all'
         }
     }
     deleteItem = (id) => {
@@ -72,8 +74,40 @@ class App extends Component {
         });
     }
 
+    searchEmp = (data, searchBar) => {
+        if (searchBar.length === 0) {
+            
+            return data;
+        }
+
+        return data.filter(item => {
+            return item.name.toLowerCase().indexOf(searchBar.toLowerCase()) > -1
+        });
+    }
+
+    onUpdateSearch = (searchBar) => {
+        this.setState({searchBar});
+    }
+
+    filterEmploees = (data, filter) => {
+        return data.filter(item => {
+            switch (filter) {
+                case "moreSalary": 
+                    return (item.salary >= 1000);
+                case "like":
+                    return (item.like);
+                default:
+                    return item;
+            }
+        });
+    }
+    onUpdateSort = (filter) => {
+        this.setState({filter})
+    }
+
     render() {
-        const {data} = this.state;
+        const {data, searchBar, filter} = this.state;
+        const visibleSearchedData = this.filterEmploees(this.searchEmp(data, searchBar), filter);
         const employees = data.length;
         const increased = data.filter(item => item.increase).length;
         return (
@@ -82,11 +116,12 @@ class App extends Component {
                     employees={employees}
                     increased={increased}/>
                 <div className="search-panel">
-                    <SearchPanel/>
-                    <AppFilter/>
+                    <SearchPanel onUpdateSearch={this.onUpdateSearch}/>
+                    <AppFilter onUpdateSort={this.onUpdateSort}
+                    filter={filter}/>
                 </div>
                 <EmployeesList 
-                    data={data}
+                    data={visibleSearchedData}
                     onDelete={(id) => this.deleteItem(id)}
                     onToggleProp={(id, prop) => this.onToggleProp(id, prop)}/>
                 <EmployeesAddForm 
