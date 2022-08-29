@@ -14,16 +14,22 @@ class EmployeesAddForm extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
+        e.target.classList.remove("is-invalid");
+        e.target.classList.remove("is-valid");
+
     }
 
     onSubmit = (e) => {
         e.preventDefault();
-        if (this.state.name !== '' || this.state.salary !== '') {
+        if (this.state.name !== '' && this.state.salary !== '') {
             this.props.onAdd(this.state.name, this.state.salary)
             this.setState({
                 name: '',
                 salary: ''
             });
+        } else {
+            this.state.name === '' ? e.target.children[0].classList.add("is-invalid") : e.target.children[0].classList.add("is-valid");
+            this.state.salary === '' ? e.target.children[1].classList.add("is-invalid") : e.target.children[1].classList.add("is-valid");
         }
     }
 
@@ -34,7 +40,8 @@ class EmployeesAddForm extends Component {
                 <h3>Add new employee</h3>
                 <form 
                     className="add-form d-flex"
-                    onSubmit={this.onSubmit}>
+                    onSubmit={this.onSubmit}
+                    >
                     <input 
                         type="text" 
                         className="form-control new-post-label"
